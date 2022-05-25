@@ -270,20 +270,19 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store =
 
         loop store
 
-    | For (e1,e2,e3, body) ->
-        let(e1,store1)= eval e1 locEnv gloEnv store
-        //定义 For循环辅助函数 For
-        let rec loop store2 =
-            //求值 循环条件,注意变更环境 store
-            let (v, store3) = eval e2 locEnv gloEnv store2
-            if(v<>0) then
-                let store4=exec body locEnv gloEnv store3
-                let (v,store5)=eval e3 locEnv gloEnv store4
-                loop store5
-            else
-                store3 
+    | Until (e, body) ->
 
-        loop store1
+        //定义 While循环辅助函数 loop
+        let rec loop store1 =
+            //求值 循环条件,注意变更环境 store
+            let (v, store2) = eval e locEnv gloEnv store1
+            // 继续循环
+            if v = 0 then
+                loop (exec body locEnv gloEnv store2)
+            else
+                store2 //退出循环返回 环境store2
+
+        loop store
 
     | Expr e ->
         // _ 表示丢弃e的值,返回 变更后的环境store1
@@ -343,9 +342,6 @@ and eval e locEnv gloEnv store : int * store =
 
         let res =
             match ope with
-            | "|" -> i1 ||| i2
-            | "&" -> i1 &&& i2
-            | "^" -> i1 ^^^ i2
             | "*" -> i1 * i2
             | "+" -> i1 + i2
             | "-" -> i1 - i2
