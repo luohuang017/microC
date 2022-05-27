@@ -37,6 +37,7 @@ and stmt =
   | Do of stmt * expr
   | If of expr * stmt * stmt         (* Conditional                 *)
   | While of expr * stmt             (* While loop                  *)
+  | Until of expr * stmt             (* Until loop                  *)
   | For of expr * expr * expr * stmt 
   | Expr of expr                     (* Expression statement   e;   *)
   | Return of expr option            (* Return from method          *)
