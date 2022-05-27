@@ -269,7 +269,19 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store =
                 store2 //退出循环返回 环境store2
 
         loop store
+    | Until (e, body) ->
 
+        //定义 While循环辅助函数 loop
+        let rec loop store1 =
+            //求值 循环条件,注意变更环境 store
+            let (v, store2) = eval e locEnv gloEnv store1
+            // 继续循环
+            if v = 0 then
+                loop (exec body locEnv gloEnv store2)
+            else
+                store2 //退出循环返回 环境store2
+
+        loop store
     | Do (body,e) ->
         let store1=exec body locEnv gloEnv store
         //定义 While循环辅助函数 loop
