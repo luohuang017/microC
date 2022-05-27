@@ -255,7 +255,7 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store =
             exec stmt1 locEnv gloEnv store1 //True分支
         else
             exec stmt2 locEnv gloEnv store1 //False分支
-
+    
     | While (e, body) ->
 
         //定义 While循环辅助函数 loop
@@ -270,34 +270,43 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store =
 
         loop store
 
-    | Until (e, body) ->
-
+    | Do (body,e) ->
+        let store1=exec body locEnv gloEnv store
         //定义 While循环辅助函数 loop
-        let rec loop store1 =
+        let rec loop store2 =
             //求值 循环条件,注意变更环境 store
-            let (v, store2) = eval e locEnv gloEnv store1
+            let (v, store3) = eval e locEnv gloEnv store2
             // 继续循环
-            if v = 0 then
-                loop (exec body locEnv gloEnv store2)
+            if v <> 0 then
+                loop (exec body locEnv gloEnv store3)
             else
-                store2 //退出循环返回 环境store2
+                store3 //退出循环返回 环境store2
 
-        loop store
-
+        loop store1
+        
     | For (e1,e2,e3, body) ->
-        let(e1, store1) = eval e1 locEnv gloEnv store
+        let(e1,store1)= eval e1 locEnv gloEnv store
         //定义 For循环辅助函数 For
         let rec loop store2 =
             //求值 循环条件,注意变更环境 store
             let (v, store3) = eval e2 locEnv gloEnv store2
-            if(v <> 0) then
-                let store4 = exec body locEnv gloEnv store3
-                let (v, store5) = eval e3 locEnv gloEnv store4
+            if(v<>0) then
+                let store4=exec body locEnv gloEnv store3
+                let (v,store5)=eval e3 locEnv gloEnv store4
                 loop store5
             else
                 store3 
 
         loop store1
+    
+    | Prim3 (e1, e2, e3) ->
+        let (v, store1) = eval e1 locEnv gloEnv store
+        if v <> 0 then
+            let (vv, store2) =eval e2 locEnv gloEnv store1 //True分支
+            store2
+        else
+            let (vv, store2) =eval e3 locEnv gloEnv store1 //False分支
+            store2
 
     | Expr e ->
         // _ 表示丢弃e的值,返回 变更后的环境store1
@@ -389,7 +398,7 @@ and eval e locEnv gloEnv store : int * store =
         else
             eval e2 locEnv gloEnv store1
     | Call (f, es) -> callfun f es locEnv gloEnv store
-
+    
 and access acc locEnv gloEnv store : int * store =
     match acc with
     | AccVar x -> (lookup (fst locEnv) x, store)
