@@ -250,14 +250,12 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store =
     match stmt with
     | If (e, stmt1, stmt2) ->
         let (v, store1) = eval e locEnv gloEnv store
-
         if v <> 0 then
             exec stmt1 locEnv gloEnv store1 //True分支
         else
             exec stmt2 locEnv gloEnv store1 //False分支
     
     | While (e, body) ->
-
         //定义 While循环辅助函数 loop
         let rec loop store1 =
             //求值 循环条件,注意变更环境 store
@@ -267,10 +265,9 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store =
                 loop (exec body locEnv gloEnv store2)
             else
                 store2 //退出循环返回 环境store2
-
         loop store
-    | Until (e, body) ->
 
+    | Until (e, body) ->
         //定义 While循环辅助函数 loop
         let rec loop store1 =
             //求值 循环条件,注意变更环境 store
@@ -280,8 +277,8 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store =
                 loop (exec body locEnv gloEnv store2)
             else
                 store2 //退出循环返回 环境store2
-
         loop store
+        
     | Do (body,e) ->
         let store1=exec body locEnv gloEnv store
         //定义 While循环辅助函数 loop
@@ -296,7 +293,7 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store =
 
         loop store1
         
-    | For (e1,e2,e3, body) ->
+    | For (e1, e2, e3, body) ->
         let(e1,store1)= eval e1 locEnv gloEnv store
         //定义 For循环辅助函数 For
         let rec loop store2 =
@@ -310,14 +307,14 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store =
                 store3 
 
         loop store1
-    
+
     | Prim3 (e1, e2, e3) ->
         let (v, store1) = eval e1 locEnv gloEnv store
         if v <> 0 then
-            let (vv, store2) =eval e2 locEnv gloEnv store1 //True分支
+            let (vv, store2) = eval e2 locEnv gloEnv store1 //True分支
             store2
         else
-            let (vv, store2) =eval e3 locEnv gloEnv store1 //False分支
+            let (vv, store2) = eval e3 locEnv gloEnv store1 //False分支
             store2
 
     | Expr e ->
@@ -351,12 +348,16 @@ and eval e locEnv gloEnv store : int * store =
     | Access acc ->
         let (loc, store1) = access acc locEnv gloEnv store
         (getSto store1 loc, store1)
+
     | Assign (acc, e) ->
         let (loc, store1) = access acc locEnv gloEnv store
         let (res, store2) = eval e locEnv gloEnv store1
         (res, setSto store2 loc res)
+
     | CstI i -> (i, store)
+
     | Addr acc -> access acc locEnv gloEnv store
+
     | Prim1 (ope, e1) ->
         let (i1, store1) = eval e1 locEnv gloEnv store
 
@@ -370,8 +371,8 @@ and eval e locEnv gloEnv store : int * store =
                 (printf "%c" (char i1)
                  i1)
             | _ -> failwith ("unknown primitive " + ope)
-
         (res, store1)
+
     | Prim2 (ope, e1, e2) ->
         let (i1, store1) = eval e1 locEnv gloEnv store
         let (i2, store2) = eval e2 locEnv gloEnv store1
@@ -393,8 +394,8 @@ and eval e locEnv gloEnv store : int * store =
             | ">=" -> if i1 >= i2 then 1 else 0
             | ">" -> if i1 > i2 then 1 else 0
             | _ -> failwith ("unknown primitive " + ope)
-
         (res, store2)
+
     | Andalso (e1, e2) ->
         let (i1, store1) as res = eval e1 locEnv gloEnv store
 
@@ -402,6 +403,7 @@ and eval e locEnv gloEnv store : int * store =
             eval e2 locEnv gloEnv store1
         else
             res
+
     | Orelse (e1, e2) ->
         let (i1, store1) as res = eval e1 locEnv gloEnv store
 
@@ -409,6 +411,7 @@ and eval e locEnv gloEnv store : int * store =
             res
         else
             eval e2 locEnv gloEnv store1
+
     | Call (f, es) -> callfun f es locEnv gloEnv store
     
 and access acc locEnv gloEnv store : int * store =
