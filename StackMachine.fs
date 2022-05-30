@@ -46,8 +46,9 @@ type instr =
     | LDARGS of int (* load command line args on stack *)
     | STOP (* halt the abstract machine       *)
     | OR
-    | AND
+    | AMP
     | XOR
+
 (* Generate new distinct labels *)
 
 // 返回两个函数 resetLabels , newLabel
@@ -176,10 +177,11 @@ let CODESTOP = 25
 let CODEOR = 26
 
 [<Literal>]
-let CODEAND = 27
+let CODEAMP = 27
 
 [<Literal>]
 let CODEXOR = 28
+
 
 (* Bytecode emission, first pass: build environment that maps
    each label to an integer address in the bytecode.
@@ -219,7 +221,7 @@ let makelabenv (addr, labenv) instr =
     | LDARGS m -> (addr + 1, labenv)
     | STOP -> (addr + 1, labenv)
     | OR -> (addr + 1, labenv)     // he
-    | AND -> (addr + 1, labenv)    // he
+    | AMP -> (addr + 1, labenv)    // he
     | XOR -> (addr + 1, labenv)    // he
 
 (* Bytecode emission, second pass: output bytecode as integers *)
@@ -260,7 +262,7 @@ let rec emitints getlab instr ints =
     | LDARGS m -> CODELDARGS :: ints
     | STOP -> CODESTOP :: ints
     | OR -> CODEOR :: ints      // he
-    | AND -> CODEAND :: ints    // he
+    | AMP -> CODEAMP :: ints    // he
     | XOR -> CODEXOR :: ints    // he
 
 
@@ -319,7 +321,7 @@ let rec decomp ints : instr list =
     | CODELDARGS :: ints_rest -> LDARGS 0 :: decomp ints_rest
     | CODESTOP :: ints_rest -> STOP :: decomp ints_rest
     | CODEOR :: ints_rest -> OR :: decomp ints_rest
-    | CODEAND :: ints_rest -> AND :: decomp ints_rest
+    | CODEAMP :: ints_rest -> AMP :: decomp ints_rest
     | CODEXOR :: ints_rest -> XOR :: decomp ints_rest
     | CODECSTI :: i :: ints_rest -> CSTI i :: decomp ints_rest
     | _ ->

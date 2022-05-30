@@ -112,8 +112,8 @@ let rec emitx86 instr =
                     add rax, r10\n\t\
                     push rax\n\t"
     
-    | AND ->
-        ";AND\n\t\
+    | AMP ->
+        ";AMP\n\t\
                     pop rax\n\t\
                     pop r10\n\t\
                     and rax, r10\n\t\

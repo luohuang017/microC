@@ -52,7 +52,7 @@
 #define LDARGS 24
 #define STOP 25
 #define OR 26
-#define AND 27
+#define AMP 27
 #define XOR 28
 #define STACKSIZE 1000
 
@@ -143,8 +143,8 @@ void printInstruction(int p[], int pc)
   case OR:
     printf("OR");
     break;
-  case AND:
-    printf("AND");
+  case AMP:
+    printf("AMP");
     break;
   case XOR:
     printf("XOR");
@@ -335,7 +335,7 @@ int execcode(int p[], int s[], int iargs[], int iargc, int /* boolean */ trace)
       s[sp - 1] = s[sp - 1] | s[sp];
       sp--;
       break;
-    case AND:
+    case AMP:
       s[sp - 1] = s[sp - 1] & s[sp];
       sp--;
       break;

@@ -26,7 +26,7 @@ and expr =                           // 表达式，右值
   | Andalso of expr * expr           (* Sequential and              *)
   | Orelse of expr * expr            (* Sequential or               *)
   | Call of string * expr list       (* Function call f(...)        *)
-  // x==1?y=2:y=3                                                                  
+                                                           
 and access =                         //左值，存储的位置                                            
   | AccVar of string                 (* Variable access        x    *) 
   | AccDeref of expr                 (* Pointer dereferencing  *p   *)
@@ -42,16 +42,18 @@ and stmt =
   | Return of expr option            (* Return from method          *)
   | Block of stmtordec list          (* Block: grouping and scope   *)
   | Prim3 of expr * expr * expr    (* Binary primitive operator   *)
-  // 语句块内部，可以是变量声明 或语句的列表                                                              
-
+  
+// 语句块内部，可以是变量声明 或语句的列表           
 and stmtordec =                                                    
   | Dec of typ * string              (* Local variable declaration  *)
   | Stmt of stmt                     (* A statement                 *)
+  | DecAndAssign of typ * string * expr
 
 // 顶级声明 可以是函数声明或变量声明
 and topdec = 
   | Fundec of typ option * string * (typ * string) list * stmt
   | Vardec of typ * string
+  
 
 // 程序是顶级声明的列表
 and program = 

@@ -202,8 +202,7 @@ let rec bindVars xs vs locEnv store : locEnv * store =
 //
 
 let rec allocate (typ, x) (env0, nextloc) sto0 : locEnv * store =
-
-    let (nextloc1, v, sto1) =
+    let (nextloc1, v, sto1) = 
         match typ with
         //数组 调用 initSto 分配 i 个空间
         | TypA (t, Some i) -> (nextloc + i, nextloc, initSto nextloc i sto0)
@@ -213,6 +212,16 @@ let rec allocate (typ, x) (env0, nextloc) sto0 : locEnv * store =
     msg $"\nalloc:\n {((typ, x), (env0, nextloc), sto0)}\n"
     bindVar x v (env0, nextloc1) sto1
 
+let rec allocate_he (typ, x, e) (env0, nextloc) sto0 : locEnv * store =
+    let (nextloc1, w, sto1) = 
+        match typ with
+        //数组 调用 initSto 分配 i 个空间
+        | TypA (t, Some i) -> (nextloc + i, nextloc, initSto nextloc i sto0)
+        // 常规变量默认值是 0
+        | _ -> (nextloc, 0, sto0)
+
+    msg $"\nalloc:\n {((typ, x), (env0, nextloc), sto0)}\n"
+    bindVar x e (env0, nextloc1) sto1
 (* Build global environment of variables and functions.  For global
    variables, store locations are reserved; for global functions, just
    add to global function environment.
@@ -340,6 +349,11 @@ and stmtordec stmtordec locEnv gloEnv store =
     match stmtordec with
     | Stmt stmt -> (locEnv, exec stmt locEnv gloEnv store)
     | Dec (typ, x) -> allocate (typ, x) locEnv store
+    | DecAndAssign (typ, name, expr) ->
+        // let (locEnv1, store1) = allocate (typ, name) locEnv store
+        // eval expr locEnv1 gloEnv store1
+        let (e1, store1) = eval expr locEnv gloEnv store
+        allocate_he (typ, name, e1) locEnv store
 
 (* Evaluating micro-C expressions *)
 
