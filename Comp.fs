@@ -199,7 +199,7 @@ let rec cStmt stmt (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
         @ cExpr e1 varEnv funEnv
         @ [ GOTO labtest; Label labbegin ]
           @ cStmt body varEnv funEnv
-            // @ cExpr e3 varEnv funEnv
+             @ cExpr e3 varEnv funEnv
               @ [ Label labtest ]
                 @ cExpr e2 varEnv funEnv @ [ IFNZRO labbegin ]
                   

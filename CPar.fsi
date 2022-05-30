@@ -30,7 +30,6 @@ type token =
   | MOD
   | OR
   | XOR
-  | AND
   | CHAR
   | ELSE
   | IF
@@ -78,7 +77,6 @@ type tokenId =
     | TOKEN_MOD
     | TOKEN_OR
     | TOKEN_XOR
-    | TOKEN_AND
     | TOKEN_CHAR
     | TOKEN_ELSE
     | TOKEN_IF

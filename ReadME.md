@@ -1,4 +1,6 @@
-﻿## 文件说明
+﻿
+
+## 文件说明
 
 ### interpreter  解释器
 
@@ -107,6 +109,10 @@ dotnet clean  microc.fsproj   # 可选
 dotnet build  microc.fsproj   # 构建 ./bin/Debug/net6.0/microc.exe
 
 dotnet run --project microc.fsproj example/ex1.c    # 执行编译器，编译 ex1.c，并输出  ex1.out 文件
+gcc -o machine.exe machine.c
+
+# 虚拟机执行指令
+.\machine.exe ./example/ex1.out 3
 dotnet run --project microc.fsproj -g example/ex1.c   # -g 查看调试信息
 
 ./bin/Debug/net6.0/microc.exe -g example/ex1.c  # 直接执行构建的.exe文件，同上效果

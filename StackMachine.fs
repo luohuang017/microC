@@ -48,7 +48,6 @@ type instr =
     | OR
     | AND
     | XOR
-
 (* Generate new distinct labels *)
 
 // 返回两个函数 resetLabels , newLabel
@@ -181,7 +180,6 @@ let CODEAND = 27
 
 [<Literal>]
 let CODEXOR = 28
-
 
 (* Bytecode emission, first pass: build environment that maps
    each label to an integer address in the bytecode.
