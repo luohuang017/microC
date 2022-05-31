@@ -186,22 +186,21 @@ let rec cStmt stmt (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
         cExpr e1 varEnv funEnv
         @ [ IFZERO labelse ]
           @ cExpr e2 varEnv funEnv
+           @ [ INCSP -1 ]
             @ [ GOTO labend ]
               @ [ Label labelse ]
-                @ cExpr e3 varEnv funEnv @ [ Label labend ]
+                @ cExpr e3 varEnv funEnv  @ [ INCSP -1 ] @ [ Label labend ]
 
     | For (e1, e2, e3, body) ->
         let labbegin = newLabel ()
         let labtest = newLabel ()
-        let labhe = newLabel ()
 
-        [ Label labhe ]
-        @ cExpr e1 varEnv funEnv
+        cExpr e1 varEnv funEnv
         @ [ GOTO labtest; Label labbegin ]
           @ cStmt body varEnv funEnv
-             @ cExpr e3 varEnv funEnv
+             @ cExpr e3 varEnv funEnv 
               @ [ Label labtest ]
-                @ cExpr e2 varEnv funEnv @ [ IFNZRO labbegin ]
+                @ cExpr e2 varEnv funEnv  @ [ IFNZRO labbegin ]
                   
     | While (e, body) ->
         let labbegin = newLabel ()
@@ -282,6 +281,24 @@ and cExpr (e: expr) (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
         @ cExpr e varEnv funEnv @ [ STI ]
     | CstI i -> [ CSTI i ]
     | Addr acc -> cAccess acc varEnv funEnv
+    | Max(e1,e2)    ->
+        let lab = newLabel ()
+        let labEnd = newLabel ()
+        cExpr e1 varEnv funEnv
+         @ cExpr e2 varEnv funEnv
+            @[ LT ]@ [ IFZERO lab]
+              @cExpr e2 varEnv funEnv
+                @[GOTO labEnd]
+                 @[Label lab]@cExpr e1 varEnv funEnv@[Label labEnd]
+    | Min(e1,e2)    ->
+        let lab = newLabel ()
+        let labEnd = newLabel ()
+        cExpr e1 varEnv funEnv
+         @ cExpr e2 varEnv funEnv
+            @[ LT ]@ [ IFNZRO lab]
+              @cExpr e2 varEnv funEnv
+                @[GOTO labEnd]
+                 @[Label lab]@cExpr e1 varEnv funEnv@[Label labEnd]
     | Prim1 (ope, e1) ->
         cExpr e1 varEnv funEnv
         @ (match ope with

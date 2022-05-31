@@ -371,7 +371,14 @@ and eval e locEnv gloEnv store : int * store =
     | CstI i -> (i, store)
 
     | Addr acc -> access acc locEnv gloEnv store
-
+    | Max(e1,e2)->
+        let(i1,store1)=eval e1 locEnv gloEnv store
+        let(i2,store2)=eval e2 locEnv gloEnv store
+        if i1 >= i2 then (i1, store2) else (i2, store2)
+    | Min(e1,e2)->
+        let(i1,store1)=eval e1 locEnv gloEnv store
+        let(i2,store2)=eval e2 locEnv gloEnv store
+        if i1 <= i2 then (i1, store2) else (i2, store2)
     | Prim1 (ope, e1) ->
         let (i1, store1) = eval e1 locEnv gloEnv store
 

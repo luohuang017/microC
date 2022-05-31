@@ -114,7 +114,7 @@ gcc -o machine.exe machine.c
 # 虚拟机执行指令
 .\machine.exe ./example/ex1.out 3
 dotnet run --project microc.fsproj -g example/ex1.c   # -g 查看调试信息
-
+.\machine.exe -trace ./example/ex1.out 3
 ./bin/Debug/net6.0/microc.exe -g example/ex1.c  # 直接执行构建的.exe文件，同上效果
 
 
@@ -215,7 +215,7 @@ gcc -o machine.exe machine.c
 .\machine.exe ./example/ex1.out 3
 
 # 调试执行指令
-machine.exe -trace ./example/ex9.out 0  # -trace  并查看跟踪信息
+.\machine.exe -trace ./example/ex1.out 3  # -trace  并查看跟踪信息
 machine.exe -trace ./example/ex9.out 3
 
 ```
