@@ -105,6 +105,18 @@ let rec emitx86 instr =
     | OFFSET i ->
         $";OFFSET {i}\n\t\
                     push -{i * 8}\n\t" // SVM 与x86栈的增长方向相反
+    | SHIFTLEFT ->
+        ";SHIFTLEFT\n\t\
+                    pop rax\n\t\
+                    pop r10\n\t\
+                    shl rax, r10\n\t\
+                    push rax\n\t"
+    | SHIFTRIGHT ->
+        ";SHIFTRIGHT\n\t\
+                    pop rax\n\t\
+                    pop r10\n\t\
+                    shr rax, r10\n\t\
+                    push rax\n\t"
     | OR ->
         ";OR\n\t\
                     pop rax\n\t\
@@ -125,6 +137,7 @@ let rec emitx86 instr =
                     pop r10\n\t\
                     xor rax, r10\n\t\
                     push rax\n\t"
+
 
     | ADD ->
         ";ADD\n\t\
@@ -161,7 +174,6 @@ let rec emitx86 instr =
                     push rdx\n\t"
     | EQ ->
         let (l1, l2) = (new_label (), new_label ())
-
         $";EQ\n\t\
                     pop rax\n\t\
                     pop r10\n\t\
@@ -174,7 +186,6 @@ let rec emitx86 instr =
                     {l2}:\n\t"
     | LT ->
         let (l1, l2) = (new_label (), new_label ())
-
         $";LT\n\t\
                     pop rax\n\t\
                     pop r10\n\t\
