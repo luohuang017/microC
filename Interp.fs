@@ -103,7 +103,6 @@ type address = int
 // 位置 1 保存了值 8
 
 type store = Map<address, int>
-
 //空存储
 let emptyStore = Map.empty<address, int>
 
@@ -342,7 +341,7 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store =
             | s1 :: sr -> loop sr (stmtordec s1 locEnv gloEnv store)
 
         loop stmts (locEnv, store)
-
+    | Break -> store
     | Return _ -> failwith "return not implemented" // 解释器没有实现 return
 
 and stmtordec stmtordec locEnv gloEnv store =
@@ -350,10 +349,11 @@ and stmtordec stmtordec locEnv gloEnv store =
     | Stmt stmt -> (locEnv, exec stmt locEnv gloEnv store)
     | Dec (typ, x) -> allocate (typ, x) locEnv store
     | DecAndAssign (typ, name, expr) ->
-        // let (locEnv1, store1) = allocate (typ, name) locEnv store
-        // eval expr locEnv1 gloEnv store1
-        let (e1, store1) = eval expr locEnv gloEnv store
-        allocate_he (typ, name, e1) locEnv store
+        // let (e1, store1) = eval expr locEnv gloEnv store
+        // allocate_he (typ, name, e1) locEnv store
+        let (locEnv1, store1) = allocate(typ, name) locEnv store
+        let (res, store2) = eval (Assign(AccVar name, expr)) locEnv1 gloEnv store1
+        (locEnv1, store2)
 
 (* Evaluating micro-C expressions *)
 
@@ -370,15 +370,32 @@ and eval e locEnv gloEnv store : int * store =
 
     | CstI i -> (i, store)
 
+    // | CstB b -> (bool i, store)
+
+    | CstC c -> (int c, store)
+
+    | CstF f -> 
+        let bytes = System.BitConverter.GetBytes(float32(f))
+        let v = System.BitConverter.ToInt32(bytes, 0)
+        (v, store)
+
+    | CstD d -> 
+        let bytes = System.BitConverter.GetBytes(double(d))
+        let v = System.BitConverter.ToInt32(bytes, 0)
+        (v, store)
+
     | Addr acc -> access acc locEnv gloEnv store
+
     | Max(e1,e2)->
         let(i1,store1)=eval e1 locEnv gloEnv store
         let(i2,store2)=eval e2 locEnv gloEnv store
         if i1 >= i2 then (i1, store2) else (i2, store2)
+
     | Min(e1,e2)->
         let(i1,store1)=eval e1 locEnv gloEnv store
         let(i2,store2)=eval e2 locEnv gloEnv store
         if i1 <= i2 then (i1, store2) else (i2, store2)
+
     | Prim1 (ope, e1) ->
         let (i1, store1) = eval e1 locEnv gloEnv store
 
@@ -387,6 +404,12 @@ and eval e locEnv gloEnv store : int * store =
             | "!" -> if i1 = 0 then 1 else 0
             | "printi" ->
                 (printf "%d " i1
+                 i1)
+            | "printf" ->
+                (printf "%f " (float32 i1)
+                 i1)
+            | "printd" ->
+                (printf "%f " (double i1)
                  i1)
             | "printc" ->
                 (printf "%c" (char i1)
@@ -403,6 +426,8 @@ and eval e locEnv gloEnv store : int * store =
             | "|" -> i1 ||| i2
             | "&" -> i1 &&& i2
             | "^" -> i1 ^^^ i2
+            | "<<" -> i1 <<< i2
+            | ">>" -> i1 >>> i2
             | "*" -> i1 * i2
             | "+" -> i1 + i2
             | "-" -> i1 - i2
@@ -419,7 +444,6 @@ and eval e locEnv gloEnv store : int * store =
 
     | Andalso (e1, e2) ->
         let (i1, store1) as res = eval e1 locEnv gloEnv store
-
         if i1 <> 0 then
             eval e2 locEnv gloEnv store1
         else

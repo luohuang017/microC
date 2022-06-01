@@ -230,6 +230,10 @@ let rec cStmt stmt (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
           @ [ Label labtest ]
             @ cExpr e varEnv funEnv @ [ IFNZRO labbegin ]
 
+    //  | Break -> 
+    //     let labend = headlab lablist
+    //     [GOTO labend]
+
     | Expr e -> cExpr e varEnv funEnv @ [ INCSP -1 ]
 
     | Block stmts ->
@@ -280,6 +284,17 @@ and cExpr (e: expr) (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
         cAccess acc varEnv funEnv
         @ cExpr e varEnv funEnv @ [ STI ]
     | CstI i -> [ CSTI i ]
+    | CstC c -> 
+        let c = (int c)
+        [ CSTI c ]
+    | CstF f ->
+        let bytes = System.BitConverter.GetBytes(float32(f))
+        let v = System.BitConverter.ToInt32(bytes, 0)
+        [ CSTI v ]
+    | CstD d ->
+        let bytes = System.BitConverter.GetBytes(float32(d))
+        let v = System.BitConverter.ToInt32(bytes, 0)
+        [ CSTI v ]
     | Addr acc -> cAccess acc varEnv funEnv
     | Max(e1,e2)    ->
         let lab = newLabel ()
@@ -305,6 +320,8 @@ and cExpr (e: expr) (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
            | "!" -> [ NOT ]
            | "printi" -> [ PRINTI ]
            | "printc" -> [ PRINTC ]
+           | "printf" -> [ PRINTF ]
+           | "printd" -> [ PRINTD ]
            | _ -> raise (Failure "unknown primitive 1"))
     | Prim2 (ope, e1, e2) ->
         cExpr e1 varEnv funEnv
@@ -313,6 +330,8 @@ and cExpr (e: expr) (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
             | "|" -> [ OR ]
             | "&" -> [ AMP ]
             | "^" -> [ XOR ]
+            | "<<" -> [ SHIFTLEFT ]
+            | ">>" -> [ SHIFTRIGHT ]
             | "*" -> [ MUL ]
             | "+" -> [ ADD ]
             | "-" -> [ SUB ]

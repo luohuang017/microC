@@ -14,6 +14,9 @@ type token =
   | AMP
   | QEST
   | COLON
+  | POINT
+  | SHIFTLEFT
+  | SHIFTRIGHT
   | NOT
   | SEQOR
   | SEQAND
@@ -30,23 +33,33 @@ type token =
   | MOD
   | OR
   | XOR
+  | MAX
+  | MIN
   | CHAR
   | ELSE
   | IF
   | INT
+  | BOOL
+  | FLOAT
+  | DOUBLE
   | NULL
   | PRINT
+  | PRINTC
+  | PRINTD
+  | PRINTF
   | PRINTLN
   | RETURN
+  | BREAK
   | VOID
   | WHILE
   | FOR
   | DO
   | UNTIL
-  | MAX
-  | MIN
   | CSTSTRING of (string)
   | NAME of (string)
+  | CSTDOUBLE of (double)
+  | CSTFLOAT of (float32)
+  | CSTCHAR of (char)
   | CSTINT of (int)
   | CSTBOOL of (int)
 type tokenId = 
@@ -63,6 +76,9 @@ type tokenId =
     | TOKEN_AMP
     | TOKEN_QEST
     | TOKEN_COLON
+    | TOKEN_POINT
+    | TOKEN_SHIFTLEFT
+    | TOKEN_SHIFTRIGHT
     | TOKEN_NOT
     | TOKEN_SEQOR
     | TOKEN_SEQAND
@@ -79,23 +95,33 @@ type tokenId =
     | TOKEN_MOD
     | TOKEN_OR
     | TOKEN_XOR
+    | TOKEN_MAX
+    | TOKEN_MIN
     | TOKEN_CHAR
     | TOKEN_ELSE
     | TOKEN_IF
     | TOKEN_INT
+    | TOKEN_BOOL
+    | TOKEN_FLOAT
+    | TOKEN_DOUBLE
     | TOKEN_NULL
     | TOKEN_PRINT
+    | TOKEN_PRINTC
+    | TOKEN_PRINTD
+    | TOKEN_PRINTF
     | TOKEN_PRINTLN
     | TOKEN_RETURN
+    | TOKEN_BREAK
     | TOKEN_VOID
     | TOKEN_WHILE
     | TOKEN_FOR
     | TOKEN_DO
     | TOKEN_UNTIL
-    | TOKEN_MAX
-    | TOKEN_MIN
     | TOKEN_CSTSTRING
     | TOKEN_NAME
+    | TOKEN_CSTDOUBLE
+    | TOKEN_CSTFLOAT
+    | TOKEN_CSTCHAR
     | TOKEN_CSTINT
     | TOKEN_CSTBOOL
     | TOKEN_end_of_input
@@ -121,6 +147,9 @@ type nonTerminalId =
     | NONTERM_Access
     | NONTERM_Exprs
     | NONTERM_Exprs1
+    | NONTERM_ConstChar
+    | NONTERM_ConstFloat
+    | NONTERM_ConstDouble
     | NONTERM_Const
     | NONTERM_Type
 /// This function maps tokens to integer indexes

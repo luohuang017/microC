@@ -252,11 +252,18 @@ and cExpr (e : expr) (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : inst
            | "!"      -> addNOT C
            | "printi" -> PRINTI :: C
            | "printc" -> PRINTC :: C
+           | "printf" -> PRINTF :: C
+           | "printd" -> PRINTD :: C
            | _        -> failwith "unknown primitive 1")
     | Prim2(ope, e1, e2) ->
       cExpr e1 varEnv funEnv
         (cExpr e2 varEnv funEnv
            (match ope with
+           | "|" ->  OR  :: C
+            | "&" ->  AMP   :: C
+            | "^" ->  XOR   :: C
+            | "<<" ->  SHIFTLEFT   :: C
+            | ">>" ->  SHIFTRIGHT   :: C
             | "*"   -> MUL  :: C
             | "+"   -> ADD  :: C
             | "-"   -> SUB  :: C

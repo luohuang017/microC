@@ -48,6 +48,11 @@ type instr =
     | OR
     | AMP
     | XOR
+    | SHIFTLEFT
+    | SHIFTRIGHT
+    | PRINTF
+    | PRINTD
+    
 
 (* Generate new distinct labels *)
 
@@ -182,6 +187,17 @@ let CODEAMP = 27
 [<Literal>]
 let CODEXOR = 28
 
+[<Literal>]
+let CODESHIFTLEFT = 29;
+
+[<Literal>]
+let CODESHIFTRIGHT = 30;
+
+[<Literal>]
+let CODEPRINTF = 31;
+
+[<Literal>]
+let CODEPRINTD = 32;
 
 (* Bytecode emission, first pass: build environment that maps
    each label to an integer address in the bytecode.
@@ -223,7 +239,10 @@ let makelabenv (addr, labenv) instr =
     | OR -> (addr + 1, labenv)     // he
     | AMP -> (addr + 1, labenv)    // he
     | XOR -> (addr + 1, labenv)    // he
-
+    | SHIFTLEFT -> (addr + 1, labenv)
+    | SHIFTRIGHT -> (addr + 1, labenv)
+    | PRINTF -> (addr + 1, labenv)
+    | PRINTD -> (addr + 1, labenv)
 (* Bytecode emission, second pass: output bytecode as integers *)
 
 //getlab 是得到标签所在地址的函数
@@ -264,6 +283,10 @@ let rec emitints getlab instr ints =
     | OR -> CODEOR :: ints      // he
     | AMP -> CODEAMP :: ints    // he
     | XOR -> CODEXOR :: ints    // he
+    | SHIFTLEFT -> CODESHIFTLEFT :: ints
+    | SHIFTRIGHT -> CODESHIFTRIGHT :: ints
+    | PRINTF -> CODEPRINTF :: ints
+    | PRINTD -> CODEPRINTD :: ints
 
 
 (* Convert instruction list to int list in two passes:
@@ -324,6 +347,10 @@ let rec decomp ints : instr list =
     | CODEAMP :: ints_rest -> AMP :: decomp ints_rest
     | CODEXOR :: ints_rest -> XOR :: decomp ints_rest
     | CODECSTI :: i :: ints_rest -> CSTI i :: decomp ints_rest
+    | CODESHIFTLEFT :: ints_rest -> SHIFTLEFT :: decomp ints_rest
+    | CODESHIFTRIGHT :: ints_rest -> SHIFTRIGHT :: decomp ints_rest
+    | CODEPRINTF :: ints_rest -> PRINTF :: decomp ints_rest
+    | CODEPRINTD :: ints_rest -> PRINTD :: decomp ints_rest
     | _ ->
         printf "%A" ints
         failwith "unknow code"

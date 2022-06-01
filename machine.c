@@ -54,6 +54,10 @@
 #define OR 26
 #define AMP 27
 #define XOR 28
+#define SHIFTLEFT 29
+#define SHIFTRIGHT 30
+#define PRINTF 31
+#define PRINTD 32
 #define STACKSIZE 1000
 
 // Print the stack machine instruction at p[pc]
@@ -148,6 +152,18 @@ void printInstruction(int p[], int pc)
     break;
   case XOR:
     printf("XOR");
+    break;
+  case SHIFTLEFT: 
+    printf("SHIFTLEFT");
+    break;
+  case SHIFTRIGHT: 
+    printf("SHIFTRIGHT");
+    break;
+  case PRINTF:
+    printf("PRINTF");
+    break;
+  case PRINTD:
+    printf("PRINTD");
     break;
   default:
     printf("<unknown>");
@@ -342,6 +358,20 @@ int execcode(int p[], int s[], int iargs[], int iargc, int /* boolean */ trace)
     case XOR:
       s[sp - 1] = s[sp - 1] ^ s[sp];
       sp--;
+      break;
+    case SHIFTLEFT: 
+      s[sp-1] = s[sp-1] << s[sp]; 
+      sp--;
+      break;
+    case SHIFTRIGHT: 
+      s[sp-1] = s[sp-1] >> s[sp]; 
+      sp--; 
+      break;
+    case PRINTF:
+      printf("%f ", s[sp]);
+      break;
+    case PRINTD:
+      printf("%f ", s[sp]);
       break;
     default:
       printf("Illegal instruction %d at address %d\n", p[pc - 1], pc - 1);
