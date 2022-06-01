@@ -15,12 +15,19 @@ type typ =
   | TypC                             (* Type char                   *)
   | TypA of typ * int option         (* Array type                  *)
   | TypP of typ                      (* Pointer type                *)
+  | TypF
+  | TypB
+  | TypD
                                                                    
 and expr =                           // 表达式，右值                                                
   | Access of access                 (* x    or  *p    or  a[e]     *) //访问左值（右值）
   | Assign of access * expr          (* x=e  or  *p=e  or  a[e]=e   *)
   | Addr of access                   (* &x   or  &*p   or  &a[e]    *)
   | CstI of int                      (* Constant                    *)
+  | CstB of bool
+  | CstC of char  
+  | CstF of float32  
+  | CstD of double
   | Prim1 of string * expr           (* Unary primitive operator    *)
   | Prim2 of string * expr * expr    (* Binary primitive operator   *)
   | Andalso of expr * expr           (* Sequential and              *)
@@ -42,6 +49,7 @@ and stmt =
   | For of expr * expr * expr * stmt 
   | Expr of expr                     (* Expression statement   e;   *)
   | Return of expr option            (* Return from method          *)
+  | Break
   | Block of stmtordec list          (* Block: grouping and scope   *)
   | Prim3 of expr * expr * expr    (* Binary primitive operator   *)
   
