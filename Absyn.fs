@@ -35,7 +35,12 @@ and expr =                           // 表达式，右值
   | Call of string * expr list       (* Function call f(...)        *)
   | Max of expr * expr
   | Min of expr * expr
-                                                           
+  | PreInc of access
+  | PreDec of access
+  | SufInc of access
+  | SufDec of access
+
+
 and access =                         //左值，存储的位置                                            
   | AccVar of string                 (* Variable access        x    *) 
   | AccDeref of expr                 (* Pointer dereferencing  *p   *)
@@ -53,6 +58,7 @@ and stmt =
   | Block of stmtordec list          (* Block: grouping and scope   *)
   | Prim3 of expr * expr * expr    (* Binary primitive operator   *)
   
+
 // 语句块内部，可以是变量声明 或语句的列表           
 and stmtordec =                                                    
   | Dec of typ * string              (* Local variable declaration  *)

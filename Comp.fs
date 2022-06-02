@@ -323,6 +323,21 @@ and cExpr (e: expr) (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
            | "printf" -> [ PRINTF ]
            | "printd" -> [ PRINTD ]
            | _ -> raise (Failure "unknown primitive 1"))
+
+    | PreInc (acc)->
+        cAccess acc varEnv funEnv
+         @ [DUP] @ [LDI] @ [CSTI 1] @ [ADD] @ [STI]
+
+    | PreDec (acc)->
+        cAccess acc varEnv funEnv
+          @ [DUP] @ [LDI] @ [CSTI 1] @ [SUB] @ [STI] 
+    | SufInc (acc)->
+        cAccess acc varEnv funEnv
+          @ [DUP] @ [LDI] @ [SWAP] @ [DUP] @ [LDI] @ [CSTI 1] @ [ADD] @ [STI] @ [INCSP -1]
+
+    | SufDec (acc)->
+        cAccess acc varEnv funEnv
+          @ [DUP] @ [LDI] @ [SWAP] @ [DUP] @ [LDI] @ [CSTI 1] @ [SUB] @ [STI] @ [INCSP -1]
     | Prim2 (ope, e1, e2) ->
         cExpr e1 varEnv funEnv
         @ cExpr e2 varEnv funEnv

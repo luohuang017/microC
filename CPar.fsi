@@ -26,6 +26,8 @@ type token =
   | LT
   | GE
   | LE
+  | SELFINC
+  | SELFDEC
   | PLUS
   | MINUS
   | TIMES
@@ -88,6 +90,8 @@ type tokenId =
     | TOKEN_LT
     | TOKEN_GE
     | TOKEN_LE
+    | TOKEN_SELFINC
+    | TOKEN_SELFDEC
     | TOKEN_PLUS
     | TOKEN_MINUS
     | TOKEN_TIMES

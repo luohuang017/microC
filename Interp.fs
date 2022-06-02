@@ -416,6 +416,32 @@ and eval e locEnv gloEnv store : int * store =
                  i1)
             | _ -> failwith ("unknown primitive " + ope)
         (res, store1)
+    
+    | PreInc (acc)->
+        let (i1,store1)=access acc locEnv gloEnv store  //得到值的地址
+        let tmp=getSto store1 i1 
+        let tmp=tmp+1
+        let store2=setSto store1 i1 tmp //把加1后的值放入内存
+        (tmp,store2)
+
+    | PreDec (acc)->
+        let (i1,store1)=access acc locEnv gloEnv store
+        let tmp=getSto store1 i1 
+        let tmp=tmp-1
+        let store2=setSto store1 i1 tmp
+        (tmp,store2)
+    | SufInc (acc)->
+        let (i1,store1)=access acc locEnv gloEnv store
+        let tmp=getSto store1 i1 
+        let store2=setSto store1 i1 (tmp+1)   
+        (tmp,store2) //返回不加的值，内存里已加
+
+    | SufDec (acc)->
+        let (i1,store1)=access acc locEnv gloEnv store
+        let tmp=getSto store1 i1 
+        let store2=setSto store1 i1 (tmp-1)
+        (tmp,store2)
+
 
     | Prim2 (ope, e1, e2) ->
         let (i1, store1) = eval e1 locEnv gloEnv store

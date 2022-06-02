@@ -23,9 +23,9 @@ let nl = CstI 10 //  \n 的 ASCII 码
 %token CHAR ELSE IF INT BOOL FLOAT DOUBLE NULL PRINT PRINTC PRINTD PRINTF PRINTLN RETURN BREAK VOID WHILE FOR DO UNTIL
 %token MAX MIN   // 函数
 %token PLUS MINUS TIMES DIV MOD OR XOR
-%token EQ NE GT LT GE LE
+%token EQ NE GT LT GE LE SELFINC SELFDEC
 %token NOT SEQOR SEQAND
-%token LPAR RPAR LBRACE RBRACE LBRACK RBRACK SEMI COMMA ASSIGN AMP QEST COLON POINT SHIFTLEFT SHIFTRIGHT
+%token LPAR RPAR LBRACE RBRACE LBRACK RBRACK SEMI COMMA ASSIGN AMP QEST COLON POINT SHIFTLEFT SHIFTRIGHT 
 %token EOF
 
 %right ASSIGN             /* lowest precedence */  // 最下面的优先级最高
@@ -40,7 +40,7 @@ let nl = CstI 10 //  \n 的 ASCII 码
 %left PLUS MINUS
 %left TIMES DIV MOD
 %left BITLEFT BITRIGHT   // 左移右移
-%nonassoc NOT AMP 
+%nonassoc NOT AMP SELFINC SELFDEC
 %nonassoc LBRACK          /* highest precedence  */
 
 %start Main            // 语法开始符号
@@ -178,6 +178,10 @@ ExprNotAccess:
   | PRINTD Expr                         { Prim1("printd", $2) }
   | PRINTLN                             { Prim1("printc", nl) }
 
+  | SELFINC Access                         { PreInc ($2) }//new
+  | SELFDEC Access                         { PreDec ($2) }//new
+  | Access SELFINC                        { SufInc ($1) }//new
+  | Access SELFDEC                        { SufDec ($1) }//new
   | Expr OR Expr                      { Prim2("|",  $1, $3) }//new
   | Expr AMP Expr                     { Prim2("&",  $1, $3) }//new
   | Expr XOR Expr                     { Prim2("^",  $1, $3) }//new

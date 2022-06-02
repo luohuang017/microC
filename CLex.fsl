@@ -87,6 +87,8 @@ rule Token = parse          // 每个 规则rule 会生成为一个函数，函�
   | '^'             { XOR }  //新增或运算
   | "<<"            { SHIFTLEFT }   //新增
   | ">>"            { SHIFTRIGHT }   //新增
+  | "++"            { SELFINC}
+  | "--"            { SELFDEC}
   | '?'             { QEST }
   | ':'             { COLON }
   | '.'             { POINT }

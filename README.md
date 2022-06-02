@@ -1,28 +1,6 @@
-﻿## 文件说明
-```sh
-./bin/Debug/net6.0/interpc.exe example/ex1.c 8
+﻿
 
-dotnet restore  interpc.fsproj   # 可选
-dotnet clean  interpc.fsproj     # 可选
-dotnet build -v n interpc.fsproj # 构建./bin/Debug/net6.0/interpc.exe ，-v n查看详细生成过程
-
-# 构建 microc.exe 编译器程序 
-dotnet restore  microc.fsproj # 可选
-dotnet clean  microc.fsproj   # 可选
-dotnet build  microc.fsproj   # 构建 ./bin/Debug/net6.0/microc.exe
-
-dotnet run --project microc.fsproj example/ex1.c 
-
-dotnet clean machine.csproj
-dotnet build machine.csproj   #构建虚拟机 machine.exe 
-gcc -o machine.exe machine.c
-
-# 虚拟机执行指令
-.\machine.exe ./example/ex1.out 3
- 
-
-```
-
+## 文件说明
 
 ### interpreter  解释器
 
