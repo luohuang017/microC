@@ -31,6 +31,7 @@ let keyword s =
     | "printf"  -> PRINTF   //
     | "printd"  -> PRINTD   //
     | "printc"  -> PRINTC   //
+    | "printb"  -> PRINTB
     | "println" -> PRINTLN
     | "return"  -> RETURN
     | "true"    -> CSTBOOL 1
@@ -89,6 +90,11 @@ rule Token = parse          // 每个 规则rule 会生成为一个函数，函�
   | ">>"            { SHIFTRIGHT }   //新增
   | "++"            { SELFINC}
   | "--"            { SELFDEC}
+  | "+="            {PLUSASSIGN}
+  | "-="            {SUBASSIGN}
+  | "*="            {MULASSIGN}
+  | "/="            {DIVASSIGN}
+  | "%="            {MODASSIGN}
   | '?'             { QEST }
   | ':'             { COLON }
   | '.'             { POINT }

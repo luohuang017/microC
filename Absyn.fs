@@ -24,7 +24,6 @@ and expr =                           // 表达式，右值
   | Assign of access * expr          (* x=e  or  *p=e  or  a[e]=e   *)
   | Addr of access                   (* &x   or  &*p   or  &a[e]    *)
   | CstI of int                      (* Constant                    *)
-  | CstB of bool
   | CstC of char  
   | CstF of float32  
   | CstD of double
@@ -39,7 +38,7 @@ and expr =                           // 表达式，右值
   | PreDec of access
   | SufInc of access
   | SufDec of access
-
+  | MyAssign of string * access * expr
 
 and access =                         //左值，存储的位置                                            
   | AccVar of string                 (* Variable access        x    *) 

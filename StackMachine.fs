@@ -52,7 +52,7 @@ type instr =
     | SHIFTRIGHT
     | PRINTF
     | PRINTD
-    
+    | PRINTB
 
 (* Generate new distinct labels *)
 
@@ -199,6 +199,8 @@ let CODEPRINTF = 31;
 [<Literal>]
 let CODEPRINTD = 32;
 
+[<Literal>]
+let CODEPRINTB = 33;
 (* Bytecode emission, first pass: build environment that maps
    each label to an integer address in the bytecode.
  *)
@@ -243,6 +245,7 @@ let makelabenv (addr, labenv) instr =
     | SHIFTRIGHT -> (addr + 1, labenv)
     | PRINTF -> (addr + 1, labenv)
     | PRINTD -> (addr + 1, labenv)
+    | PRINTB -> (addr + 1, labenv)
 (* Bytecode emission, second pass: output bytecode as integers *)
 
 //getlab 是得到标签所在地址的函数
@@ -287,7 +290,7 @@ let rec emitints getlab instr ints =
     | SHIFTRIGHT -> CODESHIFTRIGHT :: ints
     | PRINTF -> CODEPRINTF :: ints
     | PRINTD -> CODEPRINTD :: ints
-
+    | PRINTB -> CODEPRINTB :: ints
 
 (* Convert instruction list to int list in two passes:
    Pass 1: build label environment
@@ -351,6 +354,7 @@ let rec decomp ints : instr list =
     | CODESHIFTRIGHT :: ints_rest -> SHIFTRIGHT :: decomp ints_rest
     | CODEPRINTF :: ints_rest -> PRINTF :: decomp ints_rest
     | CODEPRINTD :: ints_rest -> PRINTD :: decomp ints_rest
+    | CODEPRINTB :: ints_rest -> PRINTB :: decomp ints_rest
     | _ ->
         printf "%A" ints
         failwith "unknow code"

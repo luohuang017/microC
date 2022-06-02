@@ -58,7 +58,9 @@
 #define SHIFTRIGHT 30
 #define PRINTF 31
 #define PRINTD 32
+#define PRINTB 33
 #define STACKSIZE 1000
+
 
 // Print the stack machine instruction at p[pc]
 
@@ -164,6 +166,9 @@ void printInstruction(int p[], int pc)
     break;
   case PRINTD:
     printf("PRINTD");
+    break;
+  case PRINTB:
+    printf("PRINTB");
     break;
   default:
     printf("<unknown>");
@@ -372,6 +377,10 @@ int execcode(int p[], int s[], int iargs[], int iargc, int /* boolean */ trace)
       break;
     case PRINTD:
       printf("%f ", s[sp]);
+      break;
+    case PRINTB:
+      if(s[sp]==1) printf("true");
+      else printf("false");
       break;
     default:
       printf("Illegal instruction %d at address %d\n", p[pc - 1], pc - 1);

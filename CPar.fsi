@@ -35,6 +35,11 @@ type token =
   | MOD
   | OR
   | XOR
+  | PLUSASSIGN
+  | SUBASSIGN
+  | MULASSIGN
+  | DIVASSIGN
+  | MODASSIGN
   | MAX
   | MIN
   | CHAR
@@ -46,6 +51,7 @@ type token =
   | DOUBLE
   | NULL
   | PRINT
+  | PRINTB
   | PRINTC
   | PRINTD
   | PRINTF
@@ -99,6 +105,11 @@ type tokenId =
     | TOKEN_MOD
     | TOKEN_OR
     | TOKEN_XOR
+    | TOKEN_PLUSASSIGN
+    | TOKEN_SUBASSIGN
+    | TOKEN_MULASSIGN
+    | TOKEN_DIVASSIGN
+    | TOKEN_MODASSIGN
     | TOKEN_MAX
     | TOKEN_MIN
     | TOKEN_CHAR
@@ -110,6 +121,7 @@ type tokenId =
     | TOKEN_DOUBLE
     | TOKEN_NULL
     | TOKEN_PRINT
+    | TOKEN_PRINTB
     | TOKEN_PRINTC
     | TOKEN_PRINTD
     | TOKEN_PRINTF

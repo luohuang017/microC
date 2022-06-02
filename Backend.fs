@@ -293,6 +293,14 @@ let rec emitx86 instr =
                     call printd\n\t\
                     add rsp, 16\n\t\
                     "
+    | PRINTB ->
+        $";PRINTB\n\t
+                    pop {arg_loc 0}\n\t\
+                    push {arg_loc 0}\n\t\
+                    sub rsp, 16\n\t\
+                    call printb\n\t\
+                    add rsp, 16\n\t\
+                    "
     | LDARGS m ->
         $"\nldargs:           ;set up command line arguments on stack:\n\t\
                     mov rcx, {arg_loc 0}\n\t\

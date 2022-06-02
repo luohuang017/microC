@@ -322,8 +322,19 @@ and cExpr (e: expr) (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
            | "printc" -> [ PRINTC ]
            | "printf" -> [ PRINTF ]
            | "printd" -> [ PRINTD ]
+           | "printb" -> [ PRINTB ]
            | _ -> raise (Failure "unknown primitive 1"))
-
+    | MyAssign(s,acc,e)->
+        cAccess acc varEnv funEnv
+          @[DUP]@[LDI]@ cExpr e varEnv funEnv
+          @ (match s with
+            | "+=" -> [ ADD ]
+            | "-=" -> [ SUB ]
+            | "*=" -> [ MUL ]
+            | "/=" -> [ DIV ]
+            | "%=" -> [ MOD ]
+            | _ -> raise (Failure "unknown primitive 2"))
+            @[STI]
     | PreInc (acc)->
         cAccess acc varEnv funEnv
          @ [DUP] @ [LDI] @ [CSTI 1] @ [ADD] @ [STI]

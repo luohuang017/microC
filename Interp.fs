@@ -370,10 +370,10 @@ and eval e locEnv gloEnv store : int * store =
 
     | CstI i -> (i, store)
 
-    // | CstB b -> (bool i, store)
+    //| CstB b -> (int b, store)
 
     | CstC c -> (int c, store)
-
+    
     | CstF f -> 
         let bytes = System.BitConverter.GetBytes(float32(f))
         let v = System.BitConverter.ToInt32(bytes, 0)
@@ -411,12 +411,31 @@ and eval e locEnv gloEnv store : int * store =
             | "printd" ->
                 (printf "%f " (double i1)
                  i1)
+            | "printb" ->
+                if(i1=0) then printf "false"
+                else printf "true"
+                (i1)
             | "printc" ->
                 (printf "%c" (char i1)
                  i1)
             | _ -> failwith ("unknown primitive " + ope)
         (res, store1)
     
+    | MyAssign(s,acc,e)->
+        let (i1,store1)=access acc locEnv gloEnv store
+        let tmp=getSto store1 i1
+        let (i2,store2)=eval e locEnv gloEnv store
+        let res =
+            match s with
+            | "*=" -> tmp * i2
+            | "+=" -> tmp + i2
+            | "-=" -> tmp - i2
+            | "/=" -> tmp / i2
+            | "%=" -> tmp % i2
+            | _ -> failwith ("unknown primitive " + s)
+        let store3=setSto store2 i1 res
+        (res, store3)
+
     | PreInc (acc)->
         let (i1,store1)=access acc locEnv gloEnv store  //得到值的地址
         let tmp=getSto store1 i1 
